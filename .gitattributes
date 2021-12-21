@@ -1,2 +1,294 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+void generateArray(int*arr, int n)
+{
+	srand(time(NULL));
+	int a, b;
+
+	cout << "---Введите диапозон" << endl;
+	cout << "|Введите начало диапозона a = ";
+	cin >> a;
+	cout << "|Введите конец диапозона b = ";
+	cin >> b;
+	for (int i = 0; i < n; i++)
+	{
+		arr[i] = rand() % (b - a + 1) + a;
+	}
+	cout << " " << endl;
+}
+
+void showArray(int* arr, int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		cout << arr[i] << " ";
+	}
+	cout << " \n" ;
+}
+
+void sortArray(int* arr, int n, bool (*comparisonFunction)(int, int))
+{
+	for (int i = 0; i < n - 1; i++) {
+		for (int j = i + 1; j < n; j++)
+		{
+			if (comparisonFunction(arr[j], arr[i]))
+				swap(arr[j], arr[i]);
+		}
+	}
+}
+
+bool ascrending(int a, int b)
+{
+	return a < b; // возрастание
+}
+
+bool descrending(int a, int b)
+{
+	return a > b; // убывание
+}
+
+void maxElement(int* arr, int n)
+{
+	int index_of_max = 0;
+
+	for (int i = 1; i < n; i++)
+	{
+		if (arr[i] > arr[index_of_max])
+		{
+			index_of_max = i;
+		}
+	}
+	cout << "Максимальный элемент = " << arr[index_of_max] << " на позиции " << index_of_max + 1 << endl;
+}
+
+void minElement(int* arr, int n)
+{
+	int index_of_min = 0;
+	for (int i = 1; i < n; i++)
+	{
+		if (arr[i] < arr[index_of_min])
+		{
+			index_of_min = i;
+		}
+	}
+	cout << "Минимальный элемент = " << arr[index_of_min] << " на позиции " << index_of_min + 1 << endl;
+}
+
+void deleteElements(int* arr, int& n, bool (*deleteFunction)(int)) {
+	for (int i = 0; i < n; i++)
+	{
+		if (deleteFunction(arr[i]))
+		{
+			for (int j = i; j < n - 1; j++)
+			{
+				arr[j] = arr[j + 1];
+			}
+			n--;
+			i--;
+		}
+	}
+}
+
+bool evenElements(int a)
+{
+	return a % 2 == 0;
+}
+
+bool negativeElements(int a)
+{
+	return a < 0;
+}
+
+bool positiveElements(int a)
+{
+	return a > 0;
+}
+
+bool unevenElements(int a)
+{
+	return a % 2 != 0;
+}
+
+void endOfElements(int* arr, int& n)
+{
+	int num;
+	cout << "Введите N" << endl;
+	cin >> num;
+	for (int i = 0; i < n; i++)
+	{
+		if (arr[i] % 10 == num || arr[i] % 10 == -num)
+		{
+			for (int j = i; j < n - 1; j++)
+			{
+				arr[j] = arr[j + 1];
+			}
+			n--;
+			i--;
+		}
+	}
+}
+
+
+void menu()
+{
+	cout << "---Введите:" << endl;
+	cout << ' ' << endl;
+	cout << "|1 Для сортировки по возрастанию" << endl;
+	cout << "|2 Для сортировки по убыванию" << endl;
+	cout << "|3 Для удаления определенного типа элементов" << endl;
+	cout << "|4 Для нахождения максимального элемента" << endl;
+	cout << "|5 Для нахождения минимального элемента" << endl;
+	cout << "|6 Самый частый элемент" << endl;
+	cout << "|7 Вывести массив" << endl;
+	cout << "|8 Сгенерировать массив заново" << endl;
+	cout << "|9 Вывести меню" << endl;
+	cout << "|0 Выйти" << endl;
+}
+
+void deleteMenu()
+{
+	cout << "---Введите для удаления:" << endl;
+	cout << ' ' << endl;
+	cout << "|1 Четных чисел" << endl;
+	cout << "|2 Нечетных чисел" << endl;
+	cout << "|3 Отрицательных чисел" << endl;
+	cout << "|4 Положительных чисел" << endl;
+	cout << "|5 Чисел заканчивающихся на N" << endl;
+}
+
+void sameElements(int* arr, int n){
+	int count_of_popular = 1, popular = arr[0];
+	for (int i = 0; i < n; i++) {
+		int temp = 1;
+		for (int j = i + 1; j < n; j++) {
+			if (arr[j] == arr[i]) temp++;
+		}
+		if (temp > count_of_popular) {
+			count_of_popular = temp;
+			popular = arr[i];
+		}
+	}
+	if (count_of_popular == 1) {
+		cout << "Все элементы встречаются по одному разу" << endl;
+	}
+	else {
+		cout << "Cамый частый элемент = " << popular << endl;
+	}
+}
+
+int main()
+{
+	setlocale(LC_ALL, "");
+	int n, menu_choise, delete_choise;
+	bool flag = true;
+	cout << "---Введие размер массива" << endl;
+	cin >> n;
+	int* arr = new int[n];
+
+	generateArray(arr, n);
+	showArray(arr, n);
+	menu();
+
+	while (flag == true)
+	{
+		cin >> menu_choise;
+		switch (menu_choise)
+		{
+			case 1:
+				sortArray(arr, n, ascrending);
+				cout << "---Ваш массив с сортировкой по возрастанию:" << endl;
+				showArray(arr, n);
+				break;
+			case 2:
+				sortArray(arr, n, descrending);
+				cout << "---Ваш массив с сортировкой по убыванию:" << endl;
+				showArray(arr, n);
+				break;
+			case 3:
+				deleteMenu();
+				cin >> delete_choise;
+					switch (delete_choise)
+					{
+					case 1:
+						deleteElements(arr, n, evenElements);
+						cout << "---Ваш массив без четных чисел:" << endl;
+						showArray(arr, n);
+						break;
+					case 2:
+						deleteElements(arr, n, unevenElements);
+						cout << "---Ваш массив без нечетных чисел:" << endl;
+						showArray(arr, n);
+						break;
+					case 3:
+						deleteElements(arr, n, negativeElements);
+						cout << "---Ваш массив без отрицательных чисел:" << endl;
+						showArray(arr, n);
+						break;
+					case 4:
+						deleteElements(arr, n, positiveElements);
+						cout << "---Ваш массив без положительных чисел:" << endl;
+						showArray(arr, n);
+						break;
+					
+					case 5:
+						endOfElements(arr, n);
+						cout << "---Ваш массив чисел,оканчивающихся на" << endl;
+						showArray(arr, n);
+						break;
+					default:
+						break;
+					}
+					break;
+			case 4:
+				maxElement(arr, n);
+				break;
+			case 5:
+				minElement(arr, n);
+				break;
+			case 6:
+				sameElements(arr, n);
+				break;
+			case 7:
+				cout << "---Ваш массив:" << endl;
+				showArray(arr, n);
+				break;
+			case 8:
+				generateArray(arr, n);
+				cout << "---Ваш новый массив:" << endl;
+				showArray(arr, n);
+				break;
+			case 9:
+				menu();
+				break;
+			case 0:
+				cout << "---Вы точно хотите выйти?" << endl;
+				cout << "|1 Да" << endl;
+				cout << "|2 Нет" << endl;
+				cin >> menu_choise;
+				switch (menu_choise)
+				{
+				case 2:
+					cout << ' ' << endl;
+					menu();
+					break;
+				case 1:
+					flag = false;
+					break;
+				default:
+					while (menu_choise != 1 && menu_choise != 2)
+					{
+						cout << "Некорретный ввод, введите снова" << endl;
+						cin >> menu_choise;
+					}
+					break;
+				}
+				break;
+		}
+	}
+	delete[]arr;
+	system("pause");
+}
